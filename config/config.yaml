@@ -1,0 +1,16 @@
+simulation:
+  start: '2026-01-01'
+  days: 30
+  interval_minutes: 15
+  seed: 42
+  baseline_days: 10
+  line_voltage_v: 400
+  power_factor: 0.94
+  feeder_resistance_ohm: {F1: 0.72, F2: 0.82, F3: 0.76}
+  transformer_core_loss_kw: 0.045
+  transformer_copper_coefficient: 0.00012
+incidents:
+  - {kind: under_report, customer_id: M17, start_day: 18, end_day: 30, severity: 0.62}
+  - {kind: bypass_load, customer_id: M19, start_day: 21, end_day: 30, severity: 1.35}
+  - {kind: meter_failure, customer_id: M05, start_day: 24, end_day: 27, severity: 1.0}
+  - {kind: dropout, customer_id: M27, start_day: 26, end_day: 28, severity: 1.0}
