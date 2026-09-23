@@ -22,7 +22,7 @@ To export CSVs and run tests:
 
 ```bash
 python -m src.utils.export_data
-pytest -q
+python -m pytest -q
 ```
 
 ## What the demo shows
