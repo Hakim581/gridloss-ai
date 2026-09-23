@@ -3,6 +3,20 @@
 import streamlit as st
 
 
+RISK_LABELS_AZ = {
+    "Normal": "Normal",
+    "Low Risk": "Aşağı risk",
+    "Medium Risk": "Orta risk",
+    "High Risk": "Yüksək risk",
+    "Requires Inspection": "Yoxlama tələb olunur",
+}
+
+
+def risk_label_az(label: str) -> str:
+    """Translate the detector's stable internal risk labels for the UI."""
+    return RISK_LABELS_AZ.get(label, label)
+
+
 def render_kpis(simulation, result):
     total = result.feeder_daily
     measured = total.input_kwh.sum()
@@ -10,8 +24,15 @@ def render_kpis(simulation, result):
     watch = result.feeder_summary[result.feeder_summary.risk_score >= 0.52]
     quality = int((simulation.meters.quality == "missing").sum())
     a, b, c, d = st.columns(4)
-    a.metric("Transformer input", f"{simulation.transformer.input_kwh.sum():,.0f} kWh")
-    b.metric("Unexplained energy", f"{unexplained:,.0f} kWh", help="Sum of positive feeder residuals; interval negative residuals are not netted here.")
-    c.metric("Feeder alerts", f"{len(watch)} / 3")
-    d.metric("Missing meter intervals", f"{quality:,}")
-    st.caption(f"Feeder input total: {measured:,.0f} kWh. Synthetic observations; risk scores support inspection prioritization only.")
+    a.metric("Transformatorun giriş enerjisi", f"{simulation.transformer.input_kwh.sum():,.0f} kWh")
+    b.metric(
+        "İzah olunmayan enerji",
+        f"{unexplained:,.0f} kWh",
+        help="Müsbət fider qalıqlarının cəmidir; mənfi interval qalıqları bu göstəricidən çıxılmır.",
+    )
+    c.metric("Riskli fiderlər", f"{len(watch)} / 3")
+    d.metric("Çatışmayan sayğac intervalları", f"{quality:,}")
+    st.caption(
+        f"Fiderlərə daxil olan ümumi enerji: {measured:,.0f} kWh. "
+        "Bütün məlumatlar sünidir; risk balı yalnız yoxlama növbəsini müəyyənləşdirir."
+    )

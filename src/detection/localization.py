@@ -80,19 +80,26 @@ def detect(simulation) -> DetectionResult:
 
 def _meter_explanation(row) -> str:
     if row.missing_fraction >= 0.5:
-        return "Communication data are missing; check telemetry before interpreting the energy balance."
+        return "Rabitə məlumatları çatışmır. Enerji balansını şərh etməzdən əvvəl telemetriyanı yoxlayın."
     if row.zero_fraction >= 0.8:
-        return "Meter reports zero through most intervals while feeder energy remains measured; meter inspection recommended."
+        return "Fiderdə enerji ölçüldüyü halda sayğac intervalların çoxunda sıfır göstərir. Sayğacın yoxlanması tövsiyə olunur."
     if row.consumption_drop >= 0.3:
-        return f"Reported daily energy is {row.consumption_ratio:.0%} of its clean baseline; verify meter and customer context."
+        return f"Qeydə alınan gündəlik enerji sağlam baza səviyyəsinin {row.consumption_ratio:.0%}-i qədərdir. Sayğacı və istehlak şəraitini yoxlayın."
     if row.risk_score >= 0.52:
-        return "Feeder has unexplained energy, but this meter has no distinct anomaly; no individual attribution."
-    return "Reported consumption is within the observed baseline range."
+        return "Fiderdə izah olunmayan enerji var, lakin bu sayğacda ayrıca anomaliya görünmür. Fərdi aidetmə aparılmır."
+    return "Qeydə alınan istehlak müşahidə olunmuş baza diapazonundadır."
 
 
 def _feeder_explanation(feeder: str, peak, onset, implicated: list[str]) -> str:
     if pd.isna(onset):
-        return f"{feeder} has no sustained elevated unexplained energy after the baseline period."
-    meters = f" Anomalous meter patterns: {', '.join(implicated)}." if implicated else " No individual meter can be isolated from this evidence."
-    return (f"{feeder}: peak daily unexplained energy {peak.unexplained_kwh:.1f} kWh "
-            f"({peak.loss_ratio:.1f}× expected technical loss); anomaly begins {onset.date()}." + meters)
+        return f"{feeder} fiderində baza dövründən sonra davamlı yüksək izah olunmayan enerji aşkarlanmayıb."
+    meters = (
+        f" Anomal istehlak nümunəsi göstərən sayğaclar: {', '.join(implicated)}."
+        if implicated
+        else " Bu məlumatla ayrıca sayğacı müəyyən etmək mümkün deyil."
+    )
+    return (
+        f"{feeder}: gündəlik izah olunmayan enerjinin pik qiyməti {peak.unexplained_kwh:.1f} kWh-dır "
+        f"(gözlənilən texniki itkinin {peak.loss_ratio:.1f} qatı). Anomaliya {onset.date()} tarixində başlayır."
+        + meters
+    )
