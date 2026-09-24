@@ -1,7 +1,29 @@
 """Azerbaijani competition dashboard with reproducible scenario injection."""
 
+import importlib
+
 import pandas as pd
 import streamlit as st
+
+# Streamlit Cloud may hot-reload app.py without restarting its Python process.
+# If V1 modules are still cached, reload dependencies in order before importing
+# their V2 symbols. Ordinary fresh starts take no reload path.
+from src.evaluation import metrics as _metrics_module
+
+if not hasattr(_metrics_module, "evaluate_suite"):
+    from src.simulation import anomaly_injection as _injection_module
+    from src.simulation import simulator as _simulator_module
+    from src.detection import energy_balance as _balance_module
+    from src.detection import feature_engineering as _features_module
+    from src.detection import anomaly_model as _anomaly_module
+    from src.detection import risk_scoring as _risk_module
+    from src.detection import localization as _localization_module
+
+    for _module in (
+        _injection_module, _simulator_module, _balance_module, _features_module,
+        _anomaly_module, _risk_module, _localization_module, _metrics_module,
+    ):
+        importlib.reload(_module)
 
 from src.dashboard.charts import balance_components, feeder_timeseries, meter_trend
 from src.dashboard.components import render_kpis, risk_label_az
