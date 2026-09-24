@@ -144,4 +144,3 @@ def evaluate_suite(seeds=None, config=None, scenario_names=None):
         false_positive_feeder_days=("fp", "sum"),
     ).reset_index()
     return summary, by_scenario, runs
-

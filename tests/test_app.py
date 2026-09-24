@@ -15,4 +15,3 @@ def test_streamlit_scenario_injection_and_reset():
     app.button[1].click().run()
     assert not app.exception
     assert app.session_state["active_incident"] is None
-

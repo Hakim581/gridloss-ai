@@ -156,4 +156,3 @@ def _feeder_explanation(feeder, peak, onset):
     return (f"{feeder}: gündəlik izah olunmayan enerji zirvədə {peak.unexplained_kwh:.1f} kWh; "
             f"baza mərkəzindən {peak.residual_z:.1f} standart sapma yüksəkdir. "
             f"İlk davamlı siqnal: {onset.date()}. Fider sübutu tək müştərini müəyyən etmir.")
-

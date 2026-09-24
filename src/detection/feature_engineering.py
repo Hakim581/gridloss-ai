@@ -28,4 +28,3 @@ def meter_daily_features(simulation):
         (start - daily.consumption_ratio) / (start - full), 0, 1
     ).fillna(0)
     return daily
-

@@ -71,4 +71,3 @@ The configured 10-seed run was executed for V2 (90 scenarios; 10 clean controls)
 ## Future Utility Integration
 
 Potential future inputs include AMI, feeder and transformer meters, SCADA, GIS, OMS, asset records, and inspection results. These are design concepts, not current connections. No automatic punitive action is proposed.
-

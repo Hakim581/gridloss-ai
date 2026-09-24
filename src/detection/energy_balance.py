@@ -59,4 +59,3 @@ def daily_balances(interval):
         unexplained_kwh=("unexplained_kwh", "sum"),
         missing_meter_intervals=("missing_meters", "sum"),
     )
-

@@ -40,4 +40,3 @@ def feeder_risk(unexplained_kwh, expected_loss_kwh, baseline_center, baseline_si
         + weights["excess_to_loss"] * min(ratio / norm["excess_to_loss"], 1), 0, 1
     )
     return float(score), float(z)
-

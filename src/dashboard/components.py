@@ -37,4 +37,3 @@ def render_kpis(simulation, result):
         f"Fiderlərə daxil olan ümumi enerji: {measured:,.0f} kWh. "
         "Bütün məlumatlar sünidir; risk balı yalnız yoxlama növbəsini müəyyənləşdirir."
     )
-

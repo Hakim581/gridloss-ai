@@ -216,4 +216,3 @@ with method_tab:
             st.dataframe(sim.truth, hide_index=True, width="stretch")
     st.caption("Gələcək kommunal inteqrasiya: AMI, fider və transformator sayğacları, SCADA, GIS, OMS, "
                "aktiv reyestri və sahə yoxlamaları. Hazırda heç bir real kommunal sistemə qoşulmur.")
-

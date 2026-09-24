@@ -109,4 +109,3 @@ def render_methodology(simulation, result):
 
 def _date_or_dash(value) -> str:
     return "—" if pd.isna(value) else value.strftime("%d.%m.%Y")
-

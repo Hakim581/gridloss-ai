@@ -37,4 +37,3 @@
 **What is the transformer layer?** Independently noisy transformer and feeder readings give a system-level conservation sanity check. It is not claimed as a separate theft detector.
 
 **Can you automatically penalize a high-risk customer?** No. This is a decision support system. High score means inspection priority, never proof of misconduct or a basis for automatic punitive action.
-

@@ -202,4 +202,3 @@ def test_multi_seed_evaluation_is_deterministic():
     assert first["scenarios"] == 4
     assert first["clean_controls"] == 2
     assert set(first_runs.scenario) == names
-

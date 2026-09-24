@@ -8,4 +8,3 @@
 6. **3:30–3:55 — Legitimate load.** Reset and inject Legitimate High Consumption at M17. Both physical and reported energy rise. Show that increased demand alone does not trigger a sustained feeder-loss alert.
 7. **3:55–4:35 — Validation.** Open **Model performansı**. Run the cached, on-demand multi-seed suite before the presentation if time is constrained. Read executed precision, recall, F1, FPR, localization, delay, seed count, and the 10/20/30/40% rows. Acknowledge that 10% may be weak and undetected events are counted.
 8. **4:35–5:00 — Boundaries.** Explain that bypass load can identify a feeder without naming a customer. End with the future AMI/SCADA/GIS integration concept and the need for field calibration.
-

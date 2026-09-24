@@ -47,4 +47,3 @@ Feeder-day metrics and event-level metrics answer different questions. Low-sever
 ## Responsible interpretation
 
 Communication dropout is a data-quality problem. A zero-reporting meter merits a health check, not a root-cause declaration. A normal meter on a feeder with unmetered load receives no customer-level attribution. Engineers should verify topology, meter condition, telemetry, and legitimate usage before any field action. No automated punitive action follows from a score.
-

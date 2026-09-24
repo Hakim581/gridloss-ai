@@ -114,4 +114,3 @@ def simulate(config: dict | None = None) -> Simulation:
     })
     return Simulation(customers, meters, feeders, transformer, truth, config,
                       physical_meters, physical_feeder_frame, physical_transformer)
-

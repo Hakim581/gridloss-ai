@@ -51,4 +51,3 @@ def apply_incidents(timestamps, true_kwh, customers, incidents, baseline_days):
     return physical, bypass, unavailable, reporting_multiplier, failed, pd.DataFrame(
         truth, columns=["customer_id", "feeder_id", "kind", "start", "end", "severity"]
     )
-

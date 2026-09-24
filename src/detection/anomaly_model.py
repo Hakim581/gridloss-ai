@@ -24,4 +24,3 @@ def score_meter_anomalies(features, baseline_days, seed, config):
     )
     result["ml_outlier"] = raw > threshold
     return result
-
