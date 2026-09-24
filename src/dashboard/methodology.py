@@ -18,7 +18,7 @@ def render_methodology(simulation, result):
     step1, step2, step3, step4 = st.columns(4)
     step1.info("**1. Ölçmə**\n\nTransformator, fider və 30 sayğacdan 15 dəqiqəlik enerji göstəriciləri alınır.")
     step2.info("**2. Fiziki balans**\n\nFiderə daxil olan enerji sayğaclar və hesablanmış texniki itki ilə müqayisə edilir.")
-    step3.info("**3. Anomaliya modeli**\n\nİlk 10 gün baza kimi götürülür. Isolation Forest qeyri-adi sayğac davranışını tapır.")
+    step3.info("**3. Anomaliya modeli**\n\nİlk təmiz baza günləri ilə Isolation Forest qeyri-adi sayğac davranışını tapır.")
     step4.info("**4. Risk və izah**\n\nFider qalığı, ML balı və istehlak azalması yoxlama növbəsinə və mətn izahına çevrilir.")
 
     st.subheader("1. Enerji balansı — əsas mühəndislik hesabı")
@@ -28,6 +28,7 @@ def render_methodology(simulation, result):
     st.write(
         "Texniki itki sadələşdirilmiş üçfazalı xətt modeli ilə hesablanır: "
         "cərəyan yükdən tapılır, sonra xətt itkisi $3I^2R\\Delta t$ kimi qiymətləndirilir. "
+        "Fiziki simulyasiya həqiqi xətt parametrləri ilə, detektor fərqli nominal parametrlərlə işləyir. "
         "Rabitəsi kəsilmiş sayğac üçün eyni saatın baza medianı müvəqqəti qiymət kimi istifadə olunur "
         "və məlumat keyfiyyəti ayrıca işarələnir."
     )
@@ -53,7 +54,7 @@ def render_methodology(simulation, result):
     st.write(
         "Isolation Forest hər sayğac üçün üç gündəlik əlamətə baxır: istehlakın öz baza səviyyəsinə "
         "nisbəti, sıfır göstəricilərin payı və çatışmayan göstəricilərin payı. Həftəsonu ilə iş günü "
-        "ayrıca müqayisə olunur. Model yalnız ilk 10 günlük təmiz baza dövrü ilə öyrədilir."
+        "ayrıca müqayisə olunur. Model yalnız təmiz baza dövrü ilə öyrədilir."
     )
     st.warning(
         "ML balı oğurluq ehtimalı deyil. O, normal nümunədən yayınmanın ölçüsüdür və mühəndis "
@@ -61,25 +62,30 @@ def render_methodology(simulation, result):
     )
 
     st.subheader("3. Risk balı necə yaranır?")
+    risk_cfg = simulation.config["risk_scoring"]
+    feeder_weights = risk_cfg["feeder_weights"]
+    meter_weights = risk_cfg["meter_weights"]
     left, right = st.columns(2)
     with left:
         st.markdown("**Fider risk balı**")
         st.write(
-            "55% — izah olunmayan enerjinin baza dövründən statistik yayınması  \n"
-            "45% — izah olunmayan enerjinin gözlənilən texniki itkiyə nisbəti"
+            f"{feeder_weights['baseline_deviation']:.0%} — izah olunmayan enerjinin baza dövründən statistik yayınması  \n"
+            f"{feeder_weights['excess_to_loss']:.0%} — baza mərkəzindən artıq enerjinin gözlənilən texniki itkiyə nisbəti"
         )
     with right:
         st.markdown("**Sayğac yoxlama balı**")
         st.write(
-            "62% — istehlakın öz baza səviyyəsindən azalması  \n"
-            "18% — Isolation Forest anomaliya balı  \n"
-            "20% — həmin fiderin risk balı"
+            f"{meter_weights['consumption_drop']:.0%} — istehlakın öz baza səviyyəsindən azalması  \n"
+            f"{meter_weights['behavioral_anomaly']:.0%} — Isolation Forest davranış anomaliya balı  \n"
+            f"{meter_weights['feeder_context']:.0%} — həmin fiderin təsdiqlənmiş konteksti"
         )
 
+    bands = risk_cfg["bands"]
     st.markdown(
-        "**Hədlər:** 0–0.24 Normal · 0.25–0.51 Aşağı risk · 0.52–0.77 Orta risk · "
-        "0.78–1.00 Yüksək risk. Məlumatın yarıdan çoxu çatışmırsa və ya sayğac əsasən sıfır "
-        "göstərirsə, nəticə birbaşa “Yoxlama tələb olunur” kimi verilir."
+        f"**Hədlər:** {bands['low']:.2f} Aşağı risk · {bands['medium']:.2f} Orta risk · "
+        f"{bands['high']:.2f} Yüksək risk. Fider üçün ən azı "
+        f"{risk_cfg['minimum_persistent_days']} ardıcıl gün tələb olunur. "
+        "Çatışmayan məlumat və sıfır göstərən sayğac ayrıca sağlamlıq yoxlamasına yönləndirilir."
     )
 
     st.subheader("4. Cari nəticəni necə oxumaq lazımdır?")

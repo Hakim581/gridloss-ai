@@ -9,6 +9,7 @@ RISK_LABELS_AZ = {
     "Medium Risk": "Orta risk",
     "High Risk": "Yüksək risk",
     "Requires Inspection": "Yoxlama tələb olunur",
+    "Data Quality Issue": "Məlumat keyfiyyəti problemi",
 }
 
 
@@ -21,7 +22,7 @@ def render_kpis(simulation, result):
     total = result.feeder_daily
     measured = total.input_kwh.sum()
     unexplained = total.unexplained_kwh.clip(lower=0).sum()
-    watch = result.feeder_summary[result.feeder_summary.risk_score >= 0.52]
+    watch = result.feeder_summary[result.feeder_summary.risk_label.isin(["Medium Risk", "High Risk"])]
     quality = int((simulation.meters.quality == "missing").sum())
     a, b, c, d = st.columns(4)
     a.metric("Transformatorun giriş enerjisi", f"{simulation.transformer.input_kwh.sum():,.0f} kWh")
