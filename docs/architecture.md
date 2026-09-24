@@ -1,22 +1,30 @@
 # Architecture
 
 ```mermaid
-flowchart LR
-    A[Customer load profiles] --> B[Physical feeder load]
-    B --> C[I²R feeder loss]
-    C --> D[Feeder input sensors]
-    B --> E[Meter reporting and incidents]
-    D --> F[Energy balance]
-    E --> F
-    F --> G[Daily residual and baseline]
-    E --> H[Daily meter features]
-    H --> I[Isolation Forest]
-    G --> J[Feeder localization]
-    I --> K[Inspection ranking]
-    J --> K
-    K --> L[Streamlit explanations]
+flowchart TD
+    A[True network state: load, R, V, pf, temperature] --> B[Physical simulation]
+    B --> C[True customer, unmetered and I²R energy]
+    C --> D[Sensor and meter measurement layer]
+    D --> E[Measured feeder and transformer inputs]
+    D --> F[Reported smart-meter readings and quality flags]
+    E --> G[Detector: nominal R, V and pf technical-loss estimate]
+    F --> G
+    G --> H[Energy-balance residual]
+    H --> I[Clean statistical baseline and persistence]
+    F --> J[Daily meter features]
+    J --> K[Clean-baseline Isolation Forest]
+    I --> L[Feeder risk and localization]
+    K --> M[Meter inspection priority]
+    L --> M
+    M --> N[Human-readable explanation and dashboard]
+    B --> T[Ground truth labels]
+    T -. evaluation only .-> Q[Validation metrics]
+    N -. predictions .-> Q
 ```
 
-The transformer input equals three feeder inputs plus transformer core/copper loss. Each feeder input equals delivered customer and unmetered energy plus modeled line loss. The detector sees only feeder, transformer, meter, and inventory measurements. Ground truth is returned separately to the validation view.
+The detector reads only `Simulation.customers`, `meters`, `feeders`, `transformer`, and nominal config. The `physical_*` frames and `truth` frame are retained for energy-conservation tests and evaluation, and are never referenced in `detect()`.
 
-The high-level boundary is important: feeder sensors can localize an unexplained load to a feeder, while meter trends can identify a suspect *meter behavior*. A bypass-type load with an otherwise normal meter has no unique customer signature here, so the system never claims customer-level localization for that scenario.
+Physical feeder input equals true customer load plus true unmetered load plus true feeder technical loss. Physical transformer input equals all true feeder inputs plus true transformer loss. Independent sensor noise changes the measured readings, not those conservation identities. Transformer residuals therefore vary under clean operation; they are presented as a system-level sanity check.
+
+One feeder imbalance can identify the affected feeder. A bypass load with normal meter behavior cannot be assigned to a particular customer from these channels alone. Only a distinct meter pattern plus feeder context affects a customer's inspection priority.
+

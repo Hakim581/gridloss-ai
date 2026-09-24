@@ -4,13 +4,56 @@ simulation:
   interval_minutes: 15
   seed: 42
   baseline_days: 10
-  line_voltage_v: 400
-  power_factor: 0.94
+
+network_truth:
   feeder_resistance_ohm: {F1: 0.72, F2: 0.82, F3: 0.76}
+  voltage_v: 400
+  power_factor: 0.94
+  resistance_reference_c: 20
+  conductor_temperature_c: 24
+  daily_temperature_swing_c: 5
+  resistance_temperature_coefficient_per_c: 0.0039
+  voltage_daily_variation_fraction: 0.007
+  power_factor_daily_variation: 0.008
   transformer_core_loss_kw: 0.045
   transformer_copper_coefficient: 0.00012
-incidents:
-  - {kind: under_report, customer_id: M17, start_day: 18, end_day: 30, severity: 0.62}
-  - {kind: bypass_load, customer_id: M19, start_day: 21, end_day: 30, severity: 1.35}
-  - {kind: meter_failure, customer_id: M05, start_day: 24, end_day: 27, severity: 1.0}
-  - {kind: dropout, customer_id: M27, start_day: 26, end_day: 28, severity: 1.0}
+
+detector_assumptions:
+  feeder_resistance_ohm: {F1: 0.70, F2: 0.80, F3: 0.75}
+  voltage_v: 400
+  power_factor: 0.94
+  transformer_core_loss_kw: 0.045
+  transformer_copper_coefficient: 0.00012
+
+measurement_uncertainty:
+  customer_meter_relative_std: 0.003
+  feeder_meter_relative_std: 0.002
+  transformer_meter_relative_std: 0.002
+  energy_rounding_decimals: 4
+
+risk_scoring:
+  bands: {low: 0.25, medium: 0.52, high: 0.78}
+  feeder_weights: {baseline_deviation: 0.70, excess_to_loss: 0.30}
+  feeder_normalization: {z: 5.0, excess_to_loss: 2.0, sigma_floor_fraction: 0.15}
+  meter_weights: {consumption_drop: 0.62, behavioral_anomaly: 0.18, feeder_context: 0.20}
+  meter_drop_start_ratio: 0.88
+  meter_drop_full_ratio: 0.50
+  minimum_persistent_days: 2
+  missing_day_exclusion_fraction: 0.05
+  ml_baseline_quantile: 0.99
+  ml_score_scale: 0.12
+  ml_contamination: 0.05
+
+evaluation:
+  seeds: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+  event_start_day: 18
+  event_duration_days: 8
+  under_report_severities: [0.10, 0.20, 0.30, 0.40]
+
+default_demo:
+  kind: under_report
+  customer_id: M17
+  start_day: 18
+  duration_days: 8
+  severity: 0.30
+
