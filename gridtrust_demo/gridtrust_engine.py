@@ -152,7 +152,8 @@ def inspect(run:dict, tick:int, expected_seconds:float=10.0) -> dict[str,Any]:
     if run['scenario']=='S07' and tick==5:
         status='BƏRPA OLUNUR'
     elif current.empty:
-        status='RABİTƏ YOXDUR' if age>1.5*expected_seconds else 'TƏSDİQLƏNMİR'
+        gap=(clock-pd.Timestamp(latest['received_time_utc']).to_pydatetime()).total_seconds() if latest else math.inf
+        status='RABİTƏ YOXDUR' if gap>1.5*expected_seconds else 'GECİKMİŞ MƏLUMAT'
     elif not has_fresh:
         status='GECİKMİŞ MƏLUMAT'
     else:
