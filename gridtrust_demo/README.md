@@ -23,13 +23,29 @@ Test:
 python -m pytest -q gridtrust_demo/tests
 ```
 
+## Sistemdən kim istifadə edəcək və haraya qoşulacaq?
+
+**Gələcək inteqrasiya planı (hazır deyil):** Azərişıq SCADA sistemindən yalnız icazəli və oxuma rejimli məlumat ixracı → ayrıca GridTrust AI analitik xidməti → dispetçerin hadisə izahı ekranı.
+
+- **Dispetçer** gündəlik bildiriş və sübutları görür, qərar verir; ssenari yaratmır.
+- **Şəbəkə mühəndisi** səbəbləri araşdırır və göstəriciləri təsdiqləyir.
+- **İT/OT inzibatçısı** mümkün pilotda bağlantı, icazə və auditin təhlükəsizliyini təmin edir.
+- **Demo komandası** sintetik ssenariləri işə salır və sistemin davranışını yoxlayır.
+
+**Hazırkı demo:** sintetik 35/10 kV model → sintetik hadisələr → lokal GridTrust analizi → Streamlit paneli. Heç bir real SCADA inteqrasiyası aparılmayıb.
+
+## İki ayrı düymə niyə nəzərdə tutulur?
+
+1. **Bütün sınaqları yoxla** — mühəndislik keyfiyyətinə nəzarət üçündür, gündəlik dispetçer işi deyil. Mövcud versiyada «Sınaq nəticələri» bölməsinin hesablama düyməsi buna uyğun funksiyanı təmin edir.
+2. **Münsiflər üçün nümayiş** — yarışda vacib hadisələri qısa ardıcıllıqla göstərmək üçün gələcək seçimdir, bu versiyada ayrıca avtomatik rejim kimi hazırlanmayıb.
+
 ## İnterfeys
 
-- **Baş səhifə:** vəziyyətin bir baxışda izahı, kiçik elektrik sxemi.
+- **Baş səhifə:** sistemin nə üçün yaradıldığı, məlumatın mənbəyi, əldə edilən nəticələr, texniki status və sadə sxem.
 - **Simulyasiya:** yeddi ssenarini seç və zaman addımlarını izlə.
 - **Süni intellekt təhlili:** AI balı, qayda ilə ölçmə yoxlaması, səbəb izahı.
 - **Sınaq nəticələri:** yalnız düymə ilə hesablanan sintetik dəqiqlik metrikləri.
-- **Layihəni anla:** mərhələlər, təhlükəsizlik qaydaları, bütün əsas terminlərin Azərbaycan dilində izahı.
+- **Layihəni anla:** istifadəçi rolları, inteqrasiya planı, qaydalar və bütün əsas terminlərin Azərbaycan dilində izahı.
 
 Əsas nümayiş: **S03 — Rabitənin kəsilməsi**. Rabitə itdikdə açarın son statusu bağlı olsa da cari status **MƏLUM DEYİL** göstərilir.
 
