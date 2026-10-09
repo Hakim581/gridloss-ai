@@ -203,7 +203,17 @@ else:
         ('5) Süni intellekt','Isolation Forest qeyri-adi göstərici kombinasiyalarına ayrıca bal verir.'),
         ('6) İzah və tövsiyə','Mövcud sübut əsasında operatora anlaşılan nəticə təqdim olunur.')]:
         with st.expander(title):st.write(desc)
-    st.markdown('### 3. Sınaq ssenarilərinin izahı')
+    st.markdown('### 3. Hansı qayda necə işləyir?')
+    rules=[
+        ('Məlumatın gecikməsi','Ölçmənin yaradılma və alınma vaxtı müqayisə olunur.','Gecikmə, hələ elektrik qəzası demək deyil.'),
+        ('Rabitə itkisi','Gözlənilən yenilənmə dövrünə görə yeni paketlərin çatmadığı müddət izlənilir.','Son məlum açar vəziyyəti cari status kimi təqdim olunmur.'),
+        ('Elektrik uyğunsuzluğu','Gərginlik, cərəyan, aktiv və reaktiv güc arasında üçfazalı uyğunluq hesablanır.','Şübhəli ölçmə avtomatik nasaz sensor sübutu deyil.'),
+        ('Süni intellektin qərarı','Öyrədilmiş model beş müşahidə göstəricisinin birləşməsini qiymətləndirir.','Model balı qəza ehtimalı faizi deyil.'),
+        ('Rabitənin bərpası','Köhnə paketlə cari etibar bərpa edilmir, yeni etibarlı müşahidə lazımdır.','Məlumat təsdiqlənməyibsə naməlum statusu qalır.'),
+    ]
+    st.dataframe(pd.DataFrame(rules,columns=['Yoxlama qaydası','İş prinsipi','Təhlükəsizlik məntiqi']),hide_index=True,use_container_width=True)
+    st.caption('Bu demoda gözlənilən yenilənmə dövrü 10 saniyə, ölçmə fərqi üçün ilkin sınaq həddi 20%-dir. Bunlar real Azərişıq SCADA sisteminin parametrləri deyil; gələcək pilotda kalibrlənməlidir.')
+    st.markdown('### 4. Sınaq ssenarilərinin izahı')
     descriptions={
         'S01':'Ölçmələr normal gəlir və rabitə işləyir.',
         'S02':'Ölçmə göndərilib, lakin rabitədə gecikdiyi üçün operatora vaxtında çatmır.',
@@ -214,7 +224,7 @@ else:
         'S07':'Rabitə bərpa olunur; əvvəl gələn köhnə paket cari vəziyyətin sübutu sayılmır.'}
     for code,title in SCENARIOS.items():
         with st.expander(f'{code} — {title}'):st.write(descriptions[code])
-    st.markdown('### 4. Terminlər lüğəti')
+    st.markdown('### 5. Terminlər lüğəti')
     glossary=[('SCADA','Elektrik şəbəkəsini uzaqdan müşahidə və idarəetmə sistemi.'),
         ('Uzaq terminal','Sahədən məlumat toplayıb mərkəzə göndərən avadanlıq.'),
         ('Telemetriya','Uzaqdan alınan ölçmə və vəziyyət məlumatları.'),
@@ -222,13 +232,13 @@ else:
         ('Son məlum vəziyyət','Rabitə kəsilmədən əvvəl alınan son təsdiqlənmiş məlumat.'),
         ('Cari təsdiqlənmiş vəziyyət','Yenilənmiş və etibarlı müşahidə ilə təsdiqlənən cari hal.'),
         ('Anomaliya','Adi məlumat davranışından qeyri-adi yayınma.'),
-        ('Isolation Forest','Qeyri-adi nümunələri ayıran maşın öyrənməsi alqoritmi.'),
+        ('Təcridetmə meşəsi','Qeyri-adi məlumat nümunələrini ayıran öyrədilmiş alqoritm (Isolation Forest).'),
         ('Elektrik hesablaması','Gərginlik, cərəyan və güc arasındakı fiziki əlaqələrin hesablanması.'),
         ('Pandapower','Elektrik şəbəkəsində yük axını hesablamaları aparan Python kitabxanası.')]
     st.dataframe(pd.DataFrame(glossary,columns=['Termin','Sadə izah']),hide_index=True,use_container_width=True)
-    st.markdown('### 5. Təhlükəsizlik və sərhədlər')
+    st.markdown('### 6. Təhlükəsizlik və sərhədlər')
     st.write('Bu proqramın real elektrik şəbəkəsinə nəzarət icazəsi yoxdur. Rele parametrlərini dəyişmir, açarları idarə etmir və real obyekt ünvanlarından istifadə etmir. Süni intellekt qərar verməyə kömək edir, lakin operatoru əvəz etmir.')
-    st.markdown('### 6. Mənbə və texniki sənəd')
+    st.markdown('### 7. Mənbə və texniki sənəd')
     st.write('Texniki əsas: GRIDTRUST AI — Software Requirements Specification v1.0, 09.10.2026. Fiziki hesablamalar: balanslı üçfazalı dövrə modeli və quraşdırıldıqda pandapower. AI: scikit-learn Isolation Forest. Bu demonstrasiya laboratoriya sınağıdır.')
 
 st.divider()
