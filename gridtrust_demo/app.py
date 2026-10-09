@@ -104,6 +104,14 @@ if page=='Baş səhifə':
         st.markdown('#### Şəbəkənin sadə sxemi')
         st.plotly_chart(network_figure(),use_container_width=True,config={'displayModeBar':False})
         st.caption('35/10 kV şəbəkənin şərti sxemi; gerçək obyektlərin yeri deyil.')
+        with st.expander('Hesablanmış elektrik göstəricilərini göstər'):
+            e=run['electric']
+            st.write(f"**Hesablama üsulu:** {e['source']}")
+            st.dataframe(pd.DataFrame([
+                {'Xətt':'F-01','Gərginlik (kV)':round(e['u1'],3),'Cərəyan (A)':round(e['i1'],2),'Aktiv güc (MVt)':round(e['p1'],2)},
+                {'Xətt':'F-02','Gərginlik (kV)':round(e['u2'],3),'Cərəyan (A)':round(e['i2'],2),'Aktiv güc (MVt)':round(e['p2'],2)}
+            ]),hide_index=True,use_container_width=True)
+            st.write(f"Transformator yüklənməsi: {e['trans_load']:.1f}%")
     with y:
         short_status()
         incident_details()
