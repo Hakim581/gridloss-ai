@@ -59,18 +59,24 @@ def electric_state(seed:int=42, scale:float=1.0) -> dict[str,float]:
         net = pp.create_empty_network(sn_mva=100.0)
         hi = pp.create_bus(net, vn_kv=35, name='35 kV')
         low = pp.create_bus(net, vn_kv=10, name='10 kV')
-        f1 = pp.create_bus(net, vn_kv=10, name='F-01')
-        f2 = pp.create_bus(net, vn_kv=10, name='F-02')
+        f1a=pp.create_bus(net,vn_kv=10,name='F-01/A')
+        f1b=pp.create_bus(net,vn_kv=10,name='F-01/B')
+        f1=pp.create_bus(net,vn_kv=10,name='F-01/C')
+        f2a=pp.create_bus(net,vn_kv=10,name='F-02/A')
+        f2=pp.create_bus(net,vn_kv=10,name='F-02/B')
         pp.create_ext_grid(net,hi,vm_pu=1.0)
         pp.create_transformer_from_parameters(net,hi,low,sn_mva=16,vn_hv_kv=35,vn_lv_kv=10,vkr_percent=0.6,vk_percent=6.0,pfe_kw=12,i0_percent=0.1)
-        pp.create_line_from_parameters(net,low,f1,length_km=3.0,r_ohm_per_km=.32,x_ohm_per_km=.31,c_nf_per_km=0,max_i_ka=.35,name='F-01')
-        pp.create_line_from_parameters(net,low,f2,length_km=2.0,r_ohm_per_km=.35,x_ohm_per_km=.32,c_nf_per_km=0,max_i_ka=.35,name='F-02')
-        pp.create_load(net,f1,p_mw=2.0*scale,q_mvar=.8*scale)
-        pp.create_load(net,f2,p_mw=1.4*scale,q_mvar=.5*scale)
+        for source,target,length,r,x,name in [
+            (low,f1a,1.0,.32,.31,'F-01/A'),(f1a,f1b,1.0,.32,.31,'F-01/B'),
+            (f1b,f1,1.0,.32,.31,'F-01/C'),(low,f2a,1.0,.35,.32,'F-02/A'),
+            (f2a,f2,1.0,.35,.32,'F-02/B')]:
+            pp.create_line_from_parameters(net,source,target,length_km=length,r_ohm_per_km=r,x_ohm_per_km=x,c_nf_per_km=0,max_i_ka=.35,name=name)
+        for bus,p,q in [(f1a,.5,.2),(f1b,.6,.2),(f1,.9,.4),(f2a,.6,.2),(f2,.8,.3)]:
+            pp.create_load(net,bus,p_mw=p*scale,q_mvar=q*scale)
         pp.runpp(net)
         assert net.converged
         return dict(source='pandapower',u1=float(net.res_bus.vm_pu.loc[f1]*10),u2=float(net.res_bus.vm_pu.loc[f2]*10),
-                    i1=float(net.res_line.i_ka.iloc[0]*1000),i2=float(net.res_line.i_ka.iloc[1]*1000),
+                    i1=float(net.res_line.i_ka.iloc[0]*1000),i2=float(net.res_line.i_ka.iloc[3]*1000),
                     p1=2.0*scale,q1=.8*scale,p2=1.4*scale,q2=.5*scale,
                     trans_load=float(net.res_trafo.loading_percent.iloc[0]),loss_kw=float(net.res_line.pl_mw.sum()*1000))
     except ImportError:
