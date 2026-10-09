@@ -47,3 +47,8 @@ def test_export_excludes_hidden_truth():
     data=export_run(generate('S03',42)).decode()
     assert 'hidden_switch' not in data
     assert 'RTU-01' in data
+
+
+def test_delay_is_not_automatically_outage():
+    run=generate('S02',42)
+    assert inspect(run,7)['status']=='GECİKMİŞ MƏLUMAT'
