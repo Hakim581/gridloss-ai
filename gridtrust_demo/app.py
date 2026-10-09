@@ -35,8 +35,11 @@ if 'run' not in st.session_state:
 st.sidebar.markdown('## ⚡ GridTrust AI')
 st.sidebar.caption('Elektrik şəbəkəsi üçün ağıllı məlumat yoxlaması')
 page=st.sidebar.radio('Bölmələr',[
-    'Baş səhifə','Simulyasiya','Süni intellekt təhlili','Sınaq nəticələri','Layihəni anla'
+    'Baş səhifə','Layihəni anla','Simulyasiya','Süni intellekt təhlili','Sınaq nəticələri'
 ], label_visibility='collapsed')
+st.sidebar.divider()
+st.sidebar.markdown('**İstifadə məqsədi**')
+st.sidebar.caption('Baş səhifə — dispetçerin görəcəyi məlumatlar.\n\nLayihəni anla — kimin istifadə etdiyi və necə inteqrasiya olunduğu.\n\nDigər bölmələr — sınaq və mühəndislik yoxlamaları.')
 st.sidebar.divider()
 st.sidebar.caption('**Sınaq proqramı • Sintetik məlumatlar**')
 st.sidebar.caption('Real SCADA sisteminə qoşulmur. Elektrik açarlarına əmr göndərmir.')
@@ -90,10 +93,22 @@ def incident_details():
     st.write(finding['recommendation'])
 
 st.title('GridTrust AI')
-st.caption('Rabitə və ölçmə məlumatlarının etibarlılığı • Hadisələrin izahı • Operatora qərar dəstəyi')
+st.caption('Dispetçer üçün hadisə izahı və məlumat etibarlılığı köməkçisi')
 badge()
 
 if page=='Baş səhifə':
+    st.subheader('Bu sistem nə üçün lazımdır?')
+    st.write('**GridTrust AI elektrik xətlərini idarə etmir.** Mövcud məlumatları yoxlayır, problem şübhəsini izah edir və dispetçerə hansı məlumatı dəqiqləşdirməli olduğunu göstərir.')
+    a0,b0,c0=st.columns(3)
+    a0.info('**1. Məlumat haradan gəlir?**\n\nGələcəkdə: icazə verilmiş SCADA oxuma mənbəyi. Bu demoda: sintetik ölçmələr.')
+    b0.info('**2. Proqram nə edir?**\n\nRabitə gecikməsini, ölçmə uyğunsuzluğunu və əlaqəli hadisələri təhlil edir.')
+    c0.info('**3. Nə əldə olunur?**\n\nProblem izahı, məlumatın etibarlılıq vəziyyəti və yoxlama tövsiyəsi.')
+    st.caption('İstifadəçi: dispetçer və şəbəkə mühəndisi. Gələcək yer: SCADA-ya yalnız oxuma hüququ ilə bağlanan ayrıca analitik ekran. İnkişafı və parametrləri texniki komanda idarə edər.')
+    with st.expander('Bu demo ilə real tətbiqin fərqi nədir?'):
+        st.write('**Hazırkı sınaq:** Şərti 35/10 kV şəbəkə → sintetik ölçmə və hadisə qeydləri → GridTrust AI təhlili → bu ekran.')
+        st.write('**Gələcək mümkün inteqrasiya:** Səlahiyyətli və təhlükəsiz SCADA məlumat ixracı və ya təsdiqlənmiş oxuma interfeysi → ayrıca GridTrust AI analitika xidməti → dispetçer ekranı. Real bağlantı, sahə sınağı və tətbiq icazəsi hələ yoxdur.')
+        st.write('**Sərhəd:** Proqram açarı açıb-bağlamır, dispetçerin qərarını əvəz etmir və məlumat kəsiləndə real vəziyyəti bildiyini iddia etmir.')
+    st.divider()
     st.subheader('Şəbəkədə indi nə baş verir?')
     a,b,c=st.columns(3)
     a.metric('Rabitə və məlumat','Normal' if finding['confirmed'] else 'Yoxlama tələb olunur')
@@ -117,11 +132,12 @@ if page=='Baş səhifə':
         incident_details()
         st.info('**Süni intellektin rolu:** qayda yoxlamalarını əvəz etmir; qeyri-adi məlumat kombinasiyalarını əlavə olaraq aşkarlayır.')
     st.divider()
-    st.markdown('**Yoxlamaq istəyirsən?** Soldan “Simulyasiya” bölməsinə keç, hadisə seç və “Ssenarini işə sal” düyməsini bas.')
+    st.markdown('**Bu nəticədən kim istifadə edir?** Dispetçer hadisəni görür və araşdırır; lazım gələrsə texniki heyət təsdiqləyici yoxlama aparır. Bu ekran heç bir elektrik avadanlığına əmr göndərmir.')
+    st.info('**Burada niyə hadisə sınağı var?** Normalda dispetçer qəza yaratmır. Yarış prototipində isə ssenariləri biz seçirik ki, analitika sisteminin necə reaksiya verdiyini sübut edək. Bunun üçün soldan “Simulyasiya” bölməsinə keç.')
 
 elif page=='Simulyasiya':
-    st.subheader('Hadisəni özün yarat və nəticəni gör')
-    st.write('Bir ssenari seç. Proqram sintetik ölçmələr yaradacaq, onları yoxlayacaq və nə baş verdiyini izah edəcək.')
+    st.subheader('Simulyasiya laboratoriyası — yalnız sınaq üçün')
+    st.write('**Bu bölmədən yarış komandası və mühəndis istifadə edir, dispetçer yox.** Bir ssenari seç: proqram real şəbəkəyə toxunmadan süni ölçmələr yaradacaq və hadisənin necə təhlil edildiyini göstərəcək.')
     left,right=st.columns([1,2],gap='large')
     with left:
         option=st.selectbox('Sınaq hadisəsi',list(SCENARIOS),format_func=lambda x:f'{x} — {SCENARIOS[x]}',index=list(SCENARIOS).index(run['scenario']))
@@ -172,7 +188,8 @@ elif page=='Süni intellekt təhlili':
     st.warning('Model **nasazlığın dəqiq yerini və səbəbini sübut etmir**. Səbəb ehtimalları həmişə ölçmə və hadisə sübutları ilə təsdiqlənməlidir.')
 
 elif page=='Sınaq nəticələri':
-    st.subheader('Modelin həqiqi sınaq nəticələri')
+    st.subheader('Mühəndislik yoxlamaları və nəticələr')
+    st.info('**Bu ekran texniki komanda üçündür.** Buradakı sınaqlar gələcəkdə operatorun gündəlik fəaliyyətinin bir hissəsi olmayacaq.')
     st.write('Buradakı qiymətlər yalnız **sintetik test dəstində proqramın həqiqətən hesabladığı** nəticələrdir. Real “Azərişıq” şəbəkəsi üzrə dəqiqlik iddiası deyil.')
     if st.button('Hesablamaları və müqayisəni işə sal',type='primary'):
         st.session_state.show_eval=True
@@ -191,10 +208,17 @@ elif page=='Sınaq nəticələri':
     st.write('Rabitə kəsiləndə son məlum açar vəziyyəti **cari təsdiqlənmiş vəziyyət** kimi göstərilə bilməz.')
 
 else:
-    st.subheader('Layihəni anla: qaydalar, izahlar, terminlər')
-    st.markdown('### 1. GridTrust AI nə üçün yaradılıb?')
+    st.subheader('Layihəni anla — kim istifadə edir, hara qoşulur, nə edir?')
+    st.markdown('### 1. Harada yerləşir və kim istifadə edir?')
+    st.markdown('**Gələcək nəzərdə tutulan informasiya axını:**')
+    st.code('Mövcud SCADA → İcazəli, yalnız oxunan məlumatlar → GridTrust AI təhlili → Dispetçer ekranı',language=None)
+    st.markdown('**Hazırkı işlək nümunədə:**')
+    st.code('Sintetik 35/10 kV elektrik modeli → Süni ölçmə/hadisə məlumatları → GridTrust AI → Streamlit ekranı',language=None)
+    st.write('**Dispetçer:** problemin izahını, məlumatın etibarlılığını və yoxlama tövsiyəsini görür. **Şəbəkə mühəndisi:** daha detallı ölçmə və hadisələri araşdırır. **Sistem inzibatçısı:** gələcək tətbiqdə icazələri və məlumat bağlantısının sağlamlığını təmin edir. **Bizim komanda:** hazırda simulyasiya sınaqlarını icra edir.')
+    st.warning('Real inteqrasiya hələ qurulmayıb. SCADA-nın hansı məlumat interfeysinin mövcudluğu, icazələr və məlumat təhlükəsizliyi gələcək pilotdan əvvəl rəsmi təsdiqlənməlidir.')
+    st.markdown('### 2. Nə üçün hazırlanıb və hansı nəticəni verir?')
     st.write('SCADA elektrik şəbəkəsindən məlumatları göstərir. GridTrust AI isə məlumatın vaxtında gəlib-gəlmədiyini, ölçmələrin bir-biri ilə uyğunluğunu və hadisələrin əlaqəsini analiz edir. Operatora nəyi dəqiq bildiyini, nəyi bilmədiyini və haradan yoxlamaya başlamalı olduğunu izah edir.')
-    st.markdown('### 2. Proqramın işləmə ardıcıllığı')
+    st.markdown('### 3. Proqramın işləmə ardıcıllığı')
     for title,desc in [
         ('1) Elektrik modeli','Şərti 35/10 kV şəbəkənin gərginliyi, cərəyanı və gücü hesablanır.'),
         ('2) SCADA məlumatlarının yaradılması','Ölçmə və açar məlumatları vaxt möhürləri ilə sintetik şəkildə hazırlanır.'),
@@ -203,7 +227,7 @@ else:
         ('5) Süni intellekt','Isolation Forest qeyri-adi göstərici kombinasiyalarına ayrıca bal verir.'),
         ('6) İzah və tövsiyə','Mövcud sübut əsasında operatora anlaşılan nəticə təqdim olunur.')]:
         with st.expander(title):st.write(desc)
-    st.markdown('### 3. Hansı qayda necə işləyir?')
+    st.markdown('### 4. Hansı qayda necə işləyir?')
     rules=[
         ('Məlumatın gecikməsi','Ölçmənin yaradılma və alınma vaxtı müqayisə olunur.','Gecikmə, hələ elektrik qəzası demək deyil.'),
         ('Rabitə itkisi','Gözlənilən yenilənmə dövrünə görə yeni paketlərin çatmadığı müddət izlənilir.','Son məlum açar vəziyyəti cari status kimi təqdim olunmur.'),
@@ -213,7 +237,7 @@ else:
     ]
     st.dataframe(pd.DataFrame(rules,columns=['Yoxlama qaydası','İş prinsipi','Təhlükəsizlik məntiqi']),hide_index=True,use_container_width=True)
     st.caption('Bu demoda gözlənilən yenilənmə dövrü 10 saniyə, ölçmə fərqi üçün ilkin sınaq həddi 20%-dir. Bunlar real Azərişıq SCADA sisteminin parametrləri deyil; gələcək pilotda kalibrlənməlidir.')
-    st.markdown('### 4. Sınaq ssenarilərinin izahı')
+    st.markdown('### 5. Sınaq ssenarilərinin izahı')
     descriptions={
         'S01':'Ölçmələr normal gəlir və rabitə işləyir.',
         'S02':'Ölçmə göndərilib, lakin rabitədə gecikdiyi üçün operatora vaxtında çatmır.',
@@ -224,7 +248,7 @@ else:
         'S07':'Rabitə bərpa olunur; əvvəl gələn köhnə paket cari vəziyyətin sübutu sayılmır.'}
     for code,title in SCENARIOS.items():
         with st.expander(f'{code} — {title}'):st.write(descriptions[code])
-    st.markdown('### 5. Terminlər lüğəti')
+    st.markdown('### 6. Terminlər lüğəti')
     glossary=[('SCADA','Elektrik şəbəkəsini uzaqdan müşahidə və idarəetmə sistemi.'),
         ('Uzaq terminal','Sahədən məlumat toplayıb mərkəzə göndərən avadanlıq.'),
         ('Telemetriya','Uzaqdan alınan ölçmə və vəziyyət məlumatları.'),
@@ -236,9 +260,9 @@ else:
         ('Elektrik hesablaması','Gərginlik, cərəyan və güc arasındakı fiziki əlaqələrin hesablanması.'),
         ('Pandapower','Elektrik şəbəkəsində yük axını hesablamaları aparan Python kitabxanası.')]
     st.dataframe(pd.DataFrame(glossary,columns=['Termin','Sadə izah']),hide_index=True,use_container_width=True)
-    st.markdown('### 6. Təhlükəsizlik və sərhədlər')
+    st.markdown('### 7. Təhlükəsizlik və sərhədlər')
     st.write('Bu proqramın real elektrik şəbəkəsinə nəzarət icazəsi yoxdur. Rele parametrlərini dəyişmir, açarları idarə etmir və real obyekt ünvanlarından istifadə etmir. Süni intellekt qərar verməyə kömək edir, lakin operatoru əvəz etmir.')
-    st.markdown('### 7. Mənbə və texniki sənəd')
+    st.markdown('### 8. Mənbə və texniki sənəd')
     st.write('Texniki əsas: GRIDTRUST AI — Software Requirements Specification v1.0, 09.10.2026. Fiziki hesablamalar: balanslı üçfazalı dövrə modeli və quraşdırıldıqda pandapower. AI: scikit-learn Isolation Forest. Bu demonstrasiya laboratoriya sınağıdır.')
 
 st.divider()
